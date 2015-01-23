@@ -14,6 +14,8 @@
 #include "task.h"
 #include "core_cm4.h"
 #include "console.h"
+#include "netconf.h"
+#include "ethernetif.h"
 
 
 
@@ -58,6 +60,19 @@ void vApplicationIdleHook( void ) {
 // ----------------------------------------------------------------------------
 void vApplicationMallocFailedHook( void ) {
     configASSERT( 0 );  // Latch on any failure / error.
+
+}
+
+void vApplicationStackOverflowHook( xTaskHandle pxTask, signed char *pcTaskName )
+{
+	( void ) pcTaskName;
+	( void ) pxTask;
+
+	/* Run time stack overflow checking is performed if
+	configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2.  This hook
+	function is called if a stack overflow is detected. */
+	taskDISABLE_INTERRUPTS();
+	for( ;; );
 }
 
 void vBlinkLed (void * pvparameters){
@@ -88,6 +103,40 @@ void init_system_led(void)
 	return;
 }
 
+void Main_task (void * pvparameters)
+{
+
+	xTaskCreate(vBlinkLed, (signed char*)"Blink Led",configMINIMAL_STACK_SIZE,NULL,0,NULL);
+	xTaskCreate(vConsoleRxTask,(signed char*)"ConRxTask",100,NULL,1,NULL);
+	xTaskCreate(vConsoleTxTask,(signed char*)"ConTxTask",100,NULL,0,NULL);
+	Lwip_init();
+
+	for(;;)
+	{
+		vTaskDelay(500);
+
+	}
+
+
+
+}
+
+
+
+extern ETH_HandleTypeDef heth_global;
+
+void ETH_IRQHandler(void)
+{
+  /* USER CODE BEGIN ETH_IRQn 0 */
+
+  /* USER CODE END ETH_IRQn 0 */
+	GPIOD->ODR ^=GPIO_ODR_ODR_15;
+
+  HAL_ETH_IRQHandler(&heth_global);
+  /* USER CODE BEGIN ETH_IRQn 1 */
+
+  /* USER CODE END ETH_IRQn 1 */
+}
 
 
 
@@ -97,19 +146,14 @@ main(int argc, char* argv[])
   // At this stage the system clock should have already been configured
   // at high speed.
 
+	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
 
 	init_system_led();
 	usart_init(3000000); // usart na 3MHz to jest maks co ft232 moze wyciagnac
 
 
-	xTaskCreate(vBlinkLed, (signed char*)"Blink Led",100,NULL,0,NULL);
-
-	xTaskCreate(vConsoleRxTask,(signed char*)"ConRxTask",100,NULL,2,NULL);
-	xTaskCreate(vConsoleTxTask,(signed char*)"ConTxTask",100,NULL,1,NULL);
-	//xTaskCreate(vBlinkLed, (signed char*)"Blink Led",100,NULL,0,NULL);
-	//xTaskCreate(vEthernetReceive,(signed char*)"EthRecvTask",300,NULL,4,NULL);
-
-	// xTaskCreate(Main_task,(int8_t *)"Main", configMINIMAL_STACK_SIZE * 2, NULL,configMAX_PRIORITIES-4, NULL);
+	 xTaskCreate(Main_task,(int8_t *)"Main", 1024, NULL,0, NULL);
 
 
 
@@ -123,6 +167,56 @@ main(int argc, char* argv[])
        // Add your code here.
     }
 }
+
+
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+{
+/* These are volatile to try and prevent the compiler/linker optimising them
+away as the variables never actually get used.  If the debugger won't show the
+values of the variables, make them global my moving their declaration outside
+of this function. */
+volatile uint32_t r0;
+volatile uint32_t r1;
+volatile uint32_t r2;
+volatile uint32_t r3;
+volatile uint32_t r12;
+volatile uint32_t lr; /* Link register. */
+volatile uint32_t pc; /* Program counter. */
+volatile uint32_t psr;/* Program status register. */
+
+    r0 = pulFaultStackAddress[ 0 ];
+    r1 = pulFaultStackAddress[ 1 ];
+    r2 = pulFaultStackAddress[ 2 ];
+    r3 = pulFaultStackAddress[ 3 ];
+
+    r12 = pulFaultStackAddress[ 4 ];
+    lr = pulFaultStackAddress[ 5 ];
+    pc = pulFaultStackAddress[ 6 ];
+    psr = pulFaultStackAddress[ 7 ];
+
+    /* When the following line is hit, the variables contain the register values. */
+    for( ;; );
+}
+
+
+/* The fault handler implementation calls a function called
+prvGetRegistersFromStack(). */
+ void HardFault_Handler(void)
+{
+    __asm volatile
+    (
+        " tst lr, #4                                                \n"
+        " ite eq                                                    \n"
+        " mrseq r0, msp                                             \n"
+        " mrsne r0, psp                                             \n"
+        " ldr r1, [r0, #24]                                         \n"
+        " ldr r2, handler2_address_const                            \n"
+        " bx r2                                                     \n"
+        " handler2_address_const: .word prvGetRegistersFromStack    \n"
+    );
+}
+
+
 
 #pragma GCC diagnostic pop
 

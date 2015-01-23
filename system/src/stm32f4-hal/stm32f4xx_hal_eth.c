@@ -163,7 +163,7 @@ static void ETH_FlushTransmitFIFO(ETH_HandleTypeDef *heth);
 HAL_StatusTypeDef HAL_ETH_Init(ETH_HandleTypeDef *heth)
 {
   uint32_t tmpreg = 0, phyreg = 0;
-  uint32_t hclk = 60000000;
+  uint32_t hclk = 168000000;
   uint32_t tickstart = 0;
   uint32_t err = ETH_SUCCESS;
   

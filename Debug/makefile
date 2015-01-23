@@ -15,6 +15,15 @@ RM := rm -rf
 -include system/src/cmsis/subdir.mk
 -include src/subdir.mk
 -include managment/subdir.mk
+-include lwip/src/netif/ppp/subdir.mk
+-include lwip/src/netif/subdir.mk
+-include lwip/src/core/snmp/subdir.mk
+-include lwip/src/core/ipv4/subdir.mk
+-include lwip/src/core/subdir.mk
+-include lwip/src/api/subdir.mk
+-include lwip/port/STM32F4x7/arch/subdir.mk
+-include lwip/port/STM32F4x7/subdir.mk
+-include lwip/subdir.mk
 -include FreeRTOS/portable/MemMang/subdir.mk
 -include FreeRTOS/portable/GCC/ARM_CM4F/subdir.mk
 -include FreeRTOS/subdir.mk
@@ -65,7 +74,7 @@ all: stm32_test.elf secondary-outputs
 stm32_test.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-inline-functions -ffreestanding -Wunused -Wuninitialized -Wall -Wconversion -Wpointer-arith -Wshadow -Wlogical-op -Waggregate-return -Wfloat-equal  -g3 -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\libs.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\mem.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\sections.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"stm32_test.map" --specs=nano.specs -o "stm32_test.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-inline-functions -ffreestanding -Wunused -Wuninitialized -Wall -Wconversion -Wpointer-arith -Wshadow -Wlogical-op -Waggregate-return -Wfloat-equal  -g3 -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\libs.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\mem.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\sections.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"stm32_test.map" --specs=nano.specs -o "stm32_test.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -471,11 +471,16 @@ void USART6_IRQHandler()
 
 	//todo: wystaw semafor odbiorczy
 	char onechar;
+	long lHigherPriorityTaskWoken = pdFALSE;
 
 	GPIOD->ODR ^=GPIO_ODR_ODR_14;
 	onechar=(char) USART6->DR;
 
-	xQueueSendFromISR(RxQueue,&onechar,NULL);
+	xQueueSendFromISR(RxQueue,&onechar,&lHigherPriorityTaskWoken);
+
+
+
+	portEND_SWITCHING_ISR( lHigherPriorityTaskWoken );
 
 
 

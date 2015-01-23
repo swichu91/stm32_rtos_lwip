@@ -73,6 +73,7 @@
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "stm32f4xx_hal.h"
 
 
 #ifndef __VFP_FP__
@@ -390,8 +391,14 @@ void xPortSysTickHandler( void )
 	( void ) portSET_INTERRUPT_MASK_FROM_ISR();
 	{
 		vTaskIncrementTick();
+		// wrzucam tutaj obsluge licznika dla HAL
+			HAL_IncTick();
 	}
 	portCLEAR_INTERRUPT_MASK_FROM_ISR( 0 );
+
+
+
+
 }
 /*-----------------------------------------------------------*/
 

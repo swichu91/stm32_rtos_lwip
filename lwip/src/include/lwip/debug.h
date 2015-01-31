@@ -35,6 +35,7 @@
 #include "lwip/arch.h"
 #include "opt.h"
 #include <stdio.h>
+#include "cc.h"
 /** lower two bits indicate debug level
  * - 0 all
  * - 1 warning
@@ -79,13 +80,13 @@
 /** print debug message only if debug message type is enabled...
  *  AND is of correct type AND is at least LWIP_DBG_LEVEL
  */
-#define LWIP_PLATFORM_DIAG printf
+//#define LWIP_PLATFORM_DIAG printf
 #define LWIP_DEBUGF(debug, message) do { \
                                if ( \
                                    ((debug) & LWIP_DBG_ON) && \
                                    ((debug) & LWIP_DBG_TYPES_ON) && \
                                    ((s16_t)((debug) & LWIP_DBG_MASK_LEVEL) >= LWIP_DBG_MIN_LEVEL)) { \
-                                 LWIP_PLATFORM_DIAG message; \
+                                 LWIP_PLATFORM_DIAG (message); \
                                  if ((debug) & LWIP_DBG_HALT) { \
                                    while(1); \
                                  } \

@@ -83,7 +83,7 @@
 #define configUSE_PREEMPTION			1
 #define configUSE_IDLE_HOOK				0
 #define configUSE_TICK_HOOK				0
-#define configCPU_CLOCK_HZ				( SystemCoreClock )
+#define configCPU_CLOCK_HZ				( ( unsigned portLONG ) 168000000 )
 #define configTICK_RATE_HZ				( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES			( ( unsigned portBASE_TYPE ) 8 )
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )
@@ -121,6 +121,9 @@ to exclude the API function. */
 #define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
+
+
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 
 // JEK -> No idea!  See line 456 in task.c where this is used.
 //#define portALIGNMENT_ASSERT_pxCurrentTCB

@@ -49,6 +49,12 @@
 #include "netif/etharp.h"
 #include "netif/ppp_oe.h"
 
+
+//roboczo
+#include "task.h"
+#include <stdio.h>
+#include "console.h"
+
 /* global variables */
 static tcpip_init_done_fn tcpip_init_done;
 static void *tcpip_init_done_arg;
@@ -82,6 +88,8 @@ tcpip_thread(void *arg)
 
   LOCK_TCPIP_CORE();
   while (1) {                          /* MAIN Loop */
+
+
     UNLOCK_TCPIP_CORE();
     LWIP_TCPIP_THREAD_ALIVE();
     /* wait for a message, timeouts are processed while waiting */

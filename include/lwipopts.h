@@ -38,6 +38,8 @@
  */
 #define NO_SYS                  0
 
+#define ETH_PAD_SIZE           0
+
 
 /* ---------- Memory options ---------- */
 /* MEM_ALIGNMENT: should be set to the alignment of the CPU for which
@@ -74,7 +76,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* ---------- Pbuf options ---------- */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
-#define PBUF_POOL_SIZE          16
+#define PBUF_POOL_SIZE          12
 
 /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
 #define PBUF_POOL_BUFSIZE       1524
@@ -121,7 +123,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 
 /* ---------- Statistics options ---------- */
-#define LWIP_STATS 1
+#define LWIP_STATS 0
 #define LWIP_PROVIDE_ERRNO 1
 
 /* ---------- link callback options ---------- */
@@ -175,6 +177,76 @@ The STM32F4x7 allows computing and verifying the IP, UDP, TCP and ICMP checksums
 #endif
 
 
+
+/* DEBUG
+ *
+ *
+ *
+ */
+
+#define	DBG_ON		LWIP_DBG_ON
+#define	DBG_OFF		LWIP_DBG_OFF
+
+#define DBG_TYPES_ON                    DBG_ON
+
+#define ETHARP_DEBUG                    DBG_OFF
+
+#define NETIF_DEBUG                     DBG_OFF
+
+#define PBUF_DEBUG                      DBG_ON
+
+#define API_LIB_DEBUG                   DBG_OFF
+
+#define API_MSG_DEBUG                   DBG_OFF
+
+#define SOCKETS_DEBUG                   DBG_OFF
+
+#define ICMP_DEBUG                      DBG_OFF
+
+#define INET_DEBUG                      DBG_OFF
+
+#define IP_DEBUG                        DBG_OFF
+
+#define IP_REASS_DEBUG                  DBG_OFF
+
+#define RAW_DEBUG                       DBG_OFF
+
+#define MEM_DEBUG                       DBG_OFF
+
+#define MEMP_DEBUG                      DBG_OFF
+
+#define SYS_DEBUG                       DBG_OFF
+
+#define TCP_DEBUG                       DBG_OFF
+
+#define TCP_INPUT_DEBUG                 DBG_OFF
+
+#define TCP_FR_DEBUG                    DBG_OFF
+
+#define TCP_RTO_DEBUG                   DBG_OFF
+
+#define TCP_CWND_DEBUG                  DBG_OFF
+
+#define TCP_WND_DEBUG                   DBG_OFF
+
+#define TCP_OUTPUT_DEBUG                DBG_OFF
+
+#define TCP_RST_DEBUG                   DBG_OFF
+
+#define TCP_QLEN_DEBUG                  DBG_OFF
+
+#define UDP_DEBUG                       DBG_OFF
+
+#define TCPIP_DEBUG                     DBG_ON
+
+#define DBG_MIN_LEVEL                  LWIP_DBG_LEVEL_ALL
+//LWIP_DBG_LEVEL_SEVERE
+
+
+
+
+
+
 /*
    ----------------------------------------------
    ---------- Sequential layer options ----------
@@ -210,13 +282,13 @@ The STM32F4x7 allows computing and verifying the IP, UDP, TCP and ICMP checksums
 */
 
 #define TCPIP_THREAD_NAME              "TCP/IP"
-#define TCPIP_THREAD_STACKSIZE          1024
+#define TCPIP_THREAD_STACKSIZE         8192
 #define TCPIP_MBOX_SIZE                 4
 #define DEFAULT_UDP_RECVMBOX_SIZE       2000
 #define DEFAULT_TCP_RECVMBOX_SIZE       2000
 #define DEFAULT_ACCEPTMBOX_SIZE         2000
 #define DEFAULT_THREAD_STACKSIZE        500
-#define TCPIP_THREAD_PRIO               (configMAX_PRIORITIES - 6)
+#define TCPIP_THREAD_PRIO               (configMAX_PRIORITIES - 3)
 #define LWIP_COMPAT_MUTEX               1
 
 

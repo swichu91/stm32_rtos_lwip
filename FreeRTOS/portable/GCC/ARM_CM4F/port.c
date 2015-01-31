@@ -392,7 +392,7 @@ void xPortSysTickHandler( void )
 	{
 		vTaskIncrementTick();
 		// wrzucam tutaj obsluge licznika dla HAL
-			HAL_IncTick();
+		HAL_IncTick();
 	}
 	portCLEAR_INTERRUPT_MASK_FROM_ISR( 0 );
 

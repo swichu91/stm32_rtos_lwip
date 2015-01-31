@@ -74,7 +74,7 @@ all: stm32_test.elf secondary-outputs
 stm32_test.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-inline-functions -ffreestanding -Wunused -Wuninitialized -Wall -Wconversion -Wpointer-arith -Wshadow -Wlogical-op -Waggregate-return -Wfloat-equal  -g3 -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\libs.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\mem.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\sections.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"stm32_test.map" --specs=nano.specs -o "stm32_test.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-inline-functions -ffreestanding -Wunused -Wuninitialized -Wall -Wpointer-arith -Wshadow -Wlogical-op -Waggregate-return -Wfloat-equal  -g3 -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\libs.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\mem.ld" -T "E:\ECLIPSE_DEV\stm32_test\ldscripts\sections.ld" -nostartfiles -Xlinker --gc-sections -Wl,-Map,"stm32_test.map" --specs=nano.specs -o "stm32_test.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

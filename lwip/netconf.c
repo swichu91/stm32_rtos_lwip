@@ -3,7 +3,7 @@
 #include "lwip/def.h"
 #include "lwip/mem.h"
 #include "lwip/pbuf.h"
-#include "lwip/lwip_timers.h"
+#include "lwip/timers.h"
 #include "netif/etharp.h"
 #include "err.h"
 #include "ethernetif.h"

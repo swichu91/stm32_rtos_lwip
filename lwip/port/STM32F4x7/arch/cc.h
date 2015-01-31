@@ -33,6 +33,8 @@
 #define __CC_H__
 
 #include "cpu.h"
+#include <stdio.h>
+#include "console.h"
 
 
 typedef unsigned   char    u8_t;
@@ -89,6 +91,11 @@ typedef int sys_prot_t;
 
 #endif
 
-#define LWIP_PLATFORM_ASSERT(x) //do { if(!(x)) while(1); } while(0)
+//#define LWIP_PLATFORM_DIAG( x ) do{ sys_debug x ;} while( 0 )
+
+
+#define LWIP_PLATFORM_ASSERT(x) do { if(!(x)) while(1); } while(0)
+
+#define LWIP_PLATFORM_DIAG(x) do{char tmpbuf[256];sprintf(tmpbuf,(char *)x);print_console(tmpbuf);} while(0)
 
 #endif /* __CC_H__ */

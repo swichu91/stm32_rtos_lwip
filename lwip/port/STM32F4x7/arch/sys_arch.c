@@ -40,12 +40,25 @@
 #include "task.h"
 
 
+
 xTaskHandle xTaskGetCurrentTaskHandle( void ) PRIVILEGED_FUNCTION;
 
 /* This is the number of threads that can be started with sys_thread_new() */
 #define SYS_THREAD_MAX 6
 
+/*
+struct timeoutlist
+{
+	//struct sys_timeouts timeouts;
+	sys_thread_t pid;
+};
+
+static struct timeoutlist s_timeoutlist[SYS_THREAD_MAX];
+*/
+
 static u16_t s_nextthread = 0;
+
+
 
 
 /*-----------------------------------------------------------------------------------*/
@@ -54,7 +67,7 @@ err_t sys_mbox_new(sys_mbox_t *mbox, int size)
 {
 	(void ) size;
 	
-	*mbox = xQueueCreate( archMESG_QUEUE_LENGTH, sizeof( void * ) );
+	*mbox = xQueueCreate( archMESG_QUEUE_LENGTH, sizeof(void*) );
 
 #if SYS_STATS
       ++lwip_stats.sys.mbox.used;
@@ -329,6 +342,16 @@ void sys_sem_set_invalid(sys_sem_t *sem)
 void sys_init(void)
 {
 	// keep track of how many threads have been created
+/*
+	int i;
+
+	// Initialize the the per-thread sys_timeouts structures
+	// make sure there are no valid pids in the list
+	for (i = 0; i < SYS_THREAD_MAX; i++)
+	{
+		s_timeoutlist[i].pid = 0;
+	//	s_timeoutlist[i].timeouts.next = NULL;
+	}*/
 	s_nextthread = 0;
 }
 /*-----------------------------------------------------------------------------------*/
@@ -337,7 +360,7 @@ void sys_init(void)
 /*-----------------------------------------------------------------------------------*/
 #if LWIP_COMPAT_MUTEX == 0
 /* Create a new mutex*/
-err_t sys_mutex_new(sys_mutex_t *mutex) {
+err_t sys_smutex_new(sys_mutex_t *mutex) {
 
   *mutex = xSemaphoreCreateMutex();
 		if(*mutex == NULL)
@@ -380,6 +403,30 @@ void sys_mutex_unlock(sys_mutex_t *mutex)
 	xSemaphoreGive(*mutex);
 }
 #endif /*LWIP_COMPAT_MUTEX*/
+/*
+struct sys_timeouts *sys_arch_timeouts(void)
+{
+	int i;
+	T_uezTask pid;
+	struct timeoutlist *tl;
+
+	pid = TaskGetCurrent();
+
+	for (i = 0; i < s_nextthread; i++)
+	{
+		tl = &(s_timeoutlist[i]);
+		if (tl->pid == pid)
+		{
+		//	return &(tl->timeouts);
+		}
+	}
+
+	// Error
+	return NULL;
+}
+*/
+
+
 /*-----------------------------------------------------------------------------------*/
 // TODO
 /*-----------------------------------------------------------------------------------*/
@@ -398,16 +445,18 @@ int result;
    {
       result = xTaskCreate( thread, ( signed portCHAR * ) name, stacksize, arg, prio, &CreatedTask );
 
-	   // For each task created, store the task handle (pid) in the timers array.
-	   // This scheme doesn't allow for threads to be deleted
-	   //s_timeoutlist[s_nextthread++].pid = CreatedTask;
 
 	   if(result == pdPASS)
 	   {
+		   // For each task created, store the task handle (pid) in the timers array.
+		   // This scheme doesn't allow for threads to be deleted
+		  // s_timeoutlist[s_nextthread++].pid = CreatedTask;
+
 		   return CreatedTask;
 	   }
 	   else
 	   {
+
 		   return NULL;
 	   }
    }

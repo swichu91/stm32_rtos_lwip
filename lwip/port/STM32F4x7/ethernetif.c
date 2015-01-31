@@ -35,7 +35,7 @@
 #include "stm32f4xx_hal.h"
 #include "lwip/opt.h"
 
-#include "lwip/lwip_timers.h"
+#include "lwip/timers.h"
 #include "netif/etharp.h"
 #include "ethernetif.h"
 #include <string.h>
@@ -56,7 +56,7 @@
 #define IFNAME0 's'
 #define IFNAME1 't'
 
-struct netif* netif_ptr = NULL;
+static struct netif* netif_ptr = NULL;
 
 /* USER CODE BEGIN 1 */
 
@@ -149,8 +149,8 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* heth)
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    //HAL_NVIC_SetPriority(ETH_IRQn, 6, 0);
-   // HAL_NVIC_EnableIRQ(ETH_IRQn);
+    HAL_NVIC_SetPriority(ETH_IRQn, 9, 0);
+    HAL_NVIC_EnableIRQ(ETH_IRQn);
 
   }
 }
@@ -201,7 +201,7 @@ void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth)
 {
 	long lHigherPriorityTaskWoken = pdFALSE;
 
- // xSemaphoreGiveFromISR(s_xSemaphore,&lHigherPriorityTaskWoken);
+  xSemaphoreGiveFromISR(s_xSemaphore,&lHigherPriorityTaskWoken);
   portEND_SWITCHING_ISR( lHigherPriorityTaskWoken );
 }
 

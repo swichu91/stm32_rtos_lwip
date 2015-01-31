@@ -16,6 +16,7 @@
 #include "console.h"
 #include "netconf.h"
 #include "ethernetif.h"
+#include <stdlib.h>
 
 
 
@@ -75,10 +76,12 @@ void vApplicationStackOverflowHook( xTaskHandle pxTask, signed char *pcTaskName 
 	for( ;; );
 }
 
+
 void vBlinkLed (void * pvparameters){
 
 	for (;;)
 	{
+
 		vTaskDelay(500 / portTICK_RATE_MS);
 		GPIOD->ODR ^=GPIO_ODR_ODR_12;
 	}
@@ -103,22 +106,17 @@ void init_system_led(void)
 	return;
 }
 
+
+
 void Main_task (void * pvparameters)
 {
 
 	xTaskCreate(vBlinkLed, (signed char*)"Blink Led",configMINIMAL_STACK_SIZE,NULL,0,NULL);
 	xTaskCreate(vConsoleRxTask,(signed char*)"ConRxTask",100,NULL,1,NULL);
 	xTaskCreate(vConsoleTxTask,(signed char*)"ConTxTask",100,NULL,0,NULL);
+
 	Lwip_init();
-
-	for(;;)
-	{
-		vTaskDelay(500);
-
-	}
-
-
-
+	vTaskDelete(NULL);
 }
 
 
@@ -140,6 +138,8 @@ void ETH_IRQHandler(void)
 
 
 
+
+
 int
 main(int argc, char* argv[])
 {
@@ -153,7 +153,7 @@ main(int argc, char* argv[])
 	usart_init(3000000); // usart na 3MHz to jest maks co ft232 moze wyciagnac
 
 
-	 xTaskCreate(Main_task,(int8_t *)"Main", 1024, NULL,0, NULL);
+	 xTaskCreate(Main_task,(int8_t *)"Main", 8096, NULL,1, NULL);
 
 
 
@@ -167,6 +167,9 @@ main(int argc, char* argv[])
        // Add your code here.
     }
 }
+
+
+
 
 
 void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
